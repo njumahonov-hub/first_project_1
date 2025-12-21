@@ -3,8 +3,8 @@ const bookSchema = require("../schema/book.schema")
 
 const getallBooks= async (req, res ) => {
     try{
-        const books = await bookSchema.find()
-
+        const books = await bookSchema.find().populate("author_id", "-_id")  
+    //  select("-_id").skip(1).limit(2)
         res.status(200).json(books)
 
     } catch (error) {
@@ -14,9 +14,9 @@ const getallBooks= async (req, res ) => {
 
 const addBooks= async (req, res ) => {
     try{
-     const {title,pages, published_year,image_url, description, genre,period , published_home} = req.body
+     const {title,pages, published_year,image_url, description, genre,period , published_home, author_id} = req.body
 
-     await bookSchema.create({title,pages, published_year,image_url, description, genre,period , published_home})
+     await bookSchema.create({title,pages, published_year,image_url, description, genre,period , published_home, author_id})
 
     res.status(201).json({
         message: "Added book"
@@ -36,6 +36,7 @@ const getoneBook = async (req, res ) => {
             })
         }
 
+        
         res.status(200).json(Book)
 
     } catch (error) {
@@ -45,7 +46,7 @@ const getoneBook = async (req, res ) => {
 const updatebook = async (req, res ) => {
     try{
         const {id} = req.params
-         const {title,pages, published_year,image_url, description, genre,period , published_home } = req.body
+         const {title,pages, published_year,image_url, description, genre,period , published_home, author_id } = req.body
         const book = await bookSchema.findById(id)
 
         if(!book){
@@ -54,7 +55,7 @@ const updatebook = async (req, res ) => {
             })
         }
 
-        await bookSchema.findByIdAndUpdate(id, { title,pages, published_year,image_url, description, genre,period , published_home} )
+        await bookSchema.findByIdAndUpdate(id, { title,pages, published_year,image_url, description, genre,period , published_home, author_id} )
 
         res.status(200).json({
             message: "Succesful update!"
