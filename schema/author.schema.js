@@ -26,7 +26,7 @@ death_year: {
 image_url: {
     type: String,
     required: true,
-    minLength: [15, "kamida 15 ta harfdan iborat bo'lsin"]
+    maxLength: [25, "eng ko'pi 25ta harfdan iborat bo'lsin"]
 },
 bio: {
     type: String,
