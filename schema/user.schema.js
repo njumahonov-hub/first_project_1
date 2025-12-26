@@ -14,6 +14,7 @@ const user = new Schema(
     email: {
       type: String,
       required: [true, "Email majburiy"],
+      unique: true,
       trim: true,
       lowercase: true,
       match: [
@@ -27,6 +28,28 @@ const user = new Schema(
       required: true,
       minlength: [8, "Parol kamida 8 ta belgidan iborat bo‘lishi kerak"],
     },
+    role: {
+      type: String,
+      set: value => value.toLowerCase(),
+      enum: {
+        values: ["superadmin", "admin", "user"],
+        message: `{VALUE} bunday qiymat qabul qilinmaydi`
+      },
+      default: "user"
+    },
+    otp: {
+      type: String,
+      default: null
+    },
+     isVerified: {
+      type: Boolean,
+      default: false
+    },
+    otpTime: {
+      type: Number,
+      default: null
+    }
+    
   },
   {
     versionKey: false,

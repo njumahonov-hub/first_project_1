@@ -7,6 +7,7 @@ const uploadrouter = require("./routes/upload.routes")
 const errorMiddleware = require("./middleware/error.middleware")
 const userRoutes = require("./routes/user.routes")
 require("dotenv").config()
+const cookieParser = require("cookie-parser")
 
 
 const app = express()
@@ -14,6 +15,7 @@ const app = express()
 const PORT = process.env.PORT || 3000
 app.use(cors({origin: true, credentials: true}))
 app.use(express.json())
+app.use(cookieParser())
 
 
 connectDB()

@@ -1,34 +1,24 @@
 const jwt = require("jsonwebtoken")
 const CustomErrorHandle = require("../utils/custom-errorhandle")
 
-const Authorizaton = async (req, res, next) => {
+module.exports = function (req, res, next)  {
     try {
-    const bearerToken = req.headers.authorization
+    const accesstoken =  req.cookies.access_token
 
-     if(!bearerToken){
-        throw CustomErrorHandle.UnAuhtorized("Bearer token not found!")
+     if(!accesstoken){
+        throw CustomErrorHandle.UnAuhtorized("Access token not found!")
      }
-
-     const token = bearerToken.split(" ")
-
-     if(token[0] !== "Bearer") {
-        throw CustomErrorHandle.UnAuhtorized("Bearer not found!")
-     }
-
-     if(!token[1]){
-         throw CustomErrorHandle.UnAuhtorized("Token not found!")
-     }
-
-
-     const decode = jwt.verify(token[1], process.env.SECRET_KEY)
+     const decode = jwt.verify(accesstoken, process.env.SECRET_KEY)
       req.user = decode
       
+
+      if(!["superadmin", "admin"].includes(req.user.role)){
+        throw CustomErrorHandle.Forbidden("You are not admin or superadmin")
+      }
+
       next()
     } catch (error) {
       next(error)
     }
 }
 
-module.exports = {
-    Authorizaton
-}
