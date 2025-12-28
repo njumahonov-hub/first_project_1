@@ -1,13 +1,14 @@
 const express = require("express")
 const cors = require("cors")
 const connectDB = require("./config/db.config")
-const authorRoutes = require("./routes/auth.routes")
+const authorRoutes = require("./routes/author.routes")
 const bookRoutes = require("./routes/book.routes")
 const uploadrouter = require("./routes/upload.routes")
 const errorMiddleware = require("./middleware/error.middleware")
 const userRoutes = require("./routes/user.routes")
 require("dotenv").config()
 const cookieParser = require("cookie-parser")
+const citationRoutes = require("./routes/citation.routes")
 
 
 const app = express()
@@ -29,6 +30,7 @@ app.use(authorRoutes)
 app.use(bookRoutes)
 app.use(uploadrouter)
 app.use(userRoutes)
+app.use(citationRoutes)
 
 app.use(errorMiddleware)
 

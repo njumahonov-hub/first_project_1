@@ -1,5 +1,5 @@
 const {Router} = require("express")
-const { getallAuthors, addAuthors, getoneAuthor, updateAuthor, deleteAuthor, search } = require("../controller/auth.controller")
+const { getallAuthors, addAuthors, getoneAuthor, updateAuthor, deleteAuthor, search } = require("../controller/author.controller")
 const authorValidationMiddleware = require("../middleware/author-validation.middleware")
 const auhtorization = require("../middleware/auhtorization")
 

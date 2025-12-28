@@ -73,8 +73,6 @@ const verify = async (req, res, next) => {
 
     await UserSchema.findByIdAndUpdate(foundedUser._id, {
       isVerified: true,
-      otpTime: null,
-      otp: null,
     });
 
     const payload = {
@@ -152,20 +150,83 @@ const login = async (req, res, next) => {
   }
 };
 
-const logout = async (req, res,  next) => {
+const logout = async (req, res, next) => {
   try {
-    res.clearCookie("access_token")
-    res.clearCookie("refresh_token")
+    res.clearCookie("access_token");
+    res.clearCookie("refresh_token");
   } catch (error) {
-    next(error)
+    next(error);
   }
+};
+
+const resendOtp = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    const user = await UserSchema.findOne({ email });
+
+    if (!user) {
+      throw CustomErrorHandle.UnAuhtorized("User not found");
+    }
+
+    const randomNumbers = Array.from({ length: 6 }, () =>
+      Math.floor(Math.random() * 10)
+    ).join("");
+
+    const time = Date.now() + 120000;
+
+    await UserSchema.findByIdAndUpdate(user._id, {
+      otp: randomNumbers,
+      otpTime: time,
+    });
+
+    await emailSender(randomNumbers, email);
+
+    res.status(200).json({
+      message: "Succesful",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+const forgotPassword = async (req, res, next) => {
+    try {
+       const {email, otp, new_password} = req.body
+
+       const foundeduser = await UserSchema.findOne({email})
+
+       if(!foundeduser) {
+        throw CustomErrorHandle.UnAuhtorized("User not found")
+       }
+        
+       const time = Date.now()
+       if(foundeduser.otpTime < time) {
+        throw CustomErrorHandle.BadRequest("otp time expired")
+       }
+
+       if(foundeduser.otp !== otp) {
+        throw CustomErrorHandle.BadRequest("Wrong verification code")
+       }
+
+       const hashpassword = await bcryptjs.hash(new_password, 12)
+
+      await UserSchema.findByIdAndUpdate(foundeduser._id, {password: hashpassword})
+
+      res.status(200).json({
+        message: "Succesful"
+      })
+    } catch (error) {
+      next(error)
+    }
 }
-
-
 
 module.exports = {
   registr,
   verify,
   login,
-  logout
+  logout,
+  resendOtp,
+  forgotPassword
 };

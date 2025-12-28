@@ -1,4 +1,5 @@
 const bookSchema = require("../schema/book.schema")
+const citationSchema = require("../schema/citiation.schema")
 const CustomErrorHandle = require("../utils/custom-errorhandle")
 
 
@@ -35,8 +36,8 @@ const getoneBook = async (req, res, next  ) => {
         throw CustomErrorHandle.NotFound("book not found!")
         }
 
-        
-        res.status(200).json(Book)
+        const foundedcitation = await citationSchema.find({book_id:id })
+        res.status(200).json({Book, foundedcitation})
 
     } catch (error) {
         next(error)

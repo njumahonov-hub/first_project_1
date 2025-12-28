@@ -1,5 +1,5 @@
 const {Router} = require("express")
-const { registr, login } = require("../controller/user.controller")
+const { registr, login, resendOtp, forgotPassword } = require("../controller/user.controller")
 const { verify } = require("../controller/user.controller")
 const refreshToken = require("../middleware/refresh-token")
 const { logout } = require("../controller/user.controller")
@@ -12,5 +12,7 @@ userRoutes.post("/verify", verify)
 userRoutes.post("/login", login)
 userRoutes.get("/refresh",  refreshToken)
 userRoutes.get("/logout", logout)
+userRoutes.post("/resend", resendOtp)
+userRoutes.post("/forgot_password", forgotPassword)
 
 module.exports = userRoutes
